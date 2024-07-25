@@ -11,7 +11,8 @@ import os
 class MainWindow():
     def __init__(self,root) -> None:
         self.main_window = root
-        self.db = sqlite3.connect("times.db")
+        mainDir = os.path.dirname(os.path.abspath(__file__))
+        self.db = sqlite3.connect(os.path.join(mainDir,"times.db"))
         self.cr = self.db.cursor()
         self.cr.execute("CREATE TABLE IF NOT EXISTS times(title text,hour text,min text,period text)")
         times = [time[0] for time in asset.db_get("*","times","fetchall",self.cr)]
