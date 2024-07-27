@@ -1,9 +1,23 @@
 import json
-from os import path
+from os import path , makedirs
 from pynotifier import Notification
 from plyer import notification
 import logging
 import datetime
+
+
+def create_logging_folder():
+    folder = path.expanduser("~")
+    logFolder = path.join(folder , "AppData/Local/GoTo/GoToShutdown")
+    logFolder_exist = path.exists(logFolder)
+    if logFolder_exist == False:
+        makedirs(logFolder)
+    logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
+    file_exist = path.exists(logFile)
+    if file_exist == False:
+        with open(logFile, 'w') as f: 
+            f.write('This is an error file.')
+    
 
 
 def log(error):
