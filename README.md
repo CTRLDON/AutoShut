@@ -2,6 +2,7 @@
 It's a desktop application that is main objective is to shutdown the computer on specific times selected by the user
 # Main UI
 ![image](https://github.com/user-attachments/assets/51705214-2d51-4ce8-9e85-51eec1f0cf3f)
+
 this is the main UI of the application you can see that it's quite simple the three main input fields are:
 -Hours (12-hours format)
 -Minutes
