@@ -7,11 +7,14 @@ this is the main UI of the application you can see that it's quite simple the th
 - Hours (12-hours format)
 - Minutes
 - Period (AM/PM)
+  
 under them the save button to save the time in the database so it can be used to shutdown the PC
 the last two buttons are:
 - shutdown
 - abort
+
 those buttons are magical (kdding shutdown is to start the shutdown process through selectiong the nearst time from the saved times to current time)
 and abort is just for cancelling the shutdown process
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 
