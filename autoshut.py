@@ -17,8 +17,15 @@ class MainWindow():
         self.cr.execute("CREATE TABLE IF NOT EXISTS times(title text,hour text,min text,period text)")
         qr = "SELECT * FROM times"
         times = [time[0] for time in asset.db_get(self.cr , qr , "fetchall")]
+        check = asset.json_load("config.json")
+
         if len(times) != 0:
             self.shutdown()
+        if check["error file"] == False:
+            asset.create_logging_folder()
+            check["error file"] = True
+            asset.json_dump(check , "config.json")
+        
 
     def shutdown(self):
         today = datetime.datetime.today()
