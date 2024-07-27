@@ -6,6 +6,12 @@ import logging
 import datetime
 
 
+def log(error):
+    folder = path.expanduser("~")
+    logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
+    logging.basicConfig(filename=logFile , level=logging.ERROR)
+    logging.error(str(error)+" "+str(datetime.datetime.now()))
+
 def alert(head , message , icon=None):
     try:
         notification.notify(
@@ -15,12 +21,7 @@ def alert(head , message , icon=None):
             timeout = 10
         )
     except Exception as e:
-        folder = path.expanduser("~")
-        logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
-        logging.basicConfig(filename=logFile , level=logging.ERROR)
-        logging.error(str(e)+" "+str(datetime.datetime.now()))
-        print("something")
-        
+        log(e)
         return False
 
 def check_txt_len(txt , target_len , added_num):
@@ -32,17 +33,10 @@ def check_txt_len(txt , target_len , added_num):
 def save_to_db(db , cr , title , hours , minute , period):
     try:    
         cr.execute("INSERT INTO times values(? , ? , ? , ?)", (title , hours , minute , period))
-        print("Done")
         db.commit()
         return True
     except Exception as e:
-        import os
-        folder = os.path.dirname(__file__)
-        logFile = os.path.join(folder , "error.txt")
-        logging.basicConfig(filename=logFile , level=logging.ERROR)
-        logging.error(str(e)+" "+str(datetime.datetime.now()))
-        print("something")
-        
+        log(e)
         return False
 
 def json_dump(result , file_name):
@@ -56,45 +50,43 @@ def json_load(file_name):
         file.close()
     return res
 
-def db_get(count , table , type , cursor , addition = "") -> list:
+def db_get(cr,query,type) -> list:
     """
-    count : do I want all the rows or one row for example '*' to fetch all
-    table : the name of the table
-    type : do you want to fetch all the columns or a certain column
-    cursor : is the cr of the database
-    addition : is there any conditions?
+    cr : enter the cursor of your database
+    query : enter the query to be executed
+    type : do you want your data to be fetched all or fetchone (fetchall or fetchone)
     """
     try:
         if type == "fetchall":
-            data = cursor.execute(f"SELECT {count} FROM {table}{addition}").fetchall()
-            print(data)
+            data = cr.execute(query).fetchall()
         elif type == "fetchone":
-            data = cursor.execute(f"SELECT {count} FROM {table}{addition}").fetchone()
+            data = cr.execute(query).fetchone()
         return data
     except Exception as e:
-        folder = path.expanduser("~")
-        logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
-        logging.basicConfig(filename=logFile , level=logging.ERROR)
-        logging.error(str(e)+" "+str(datetime.datetime.now()))
-        print("something")
+        log(e)
+        return False
         
 
-def db_del(db , cu , table , wanted_row , dname):
+def db_del(db , cr , query , target):
+    """
+    db : insert the database variable usually named db
+    cr : insert the cursor of the database
+    query: insert the deletion process query
+    target : insert the target that you want to delete to check if there any errors and prevent sql injection
+    """
     try:
-        cu.execute(f"DELETE FROM {table} where {wanted_row} = '{dname}'")
+        cr.execute(query,(target,))
         db.commit()
-        data = db_get("*" , "times" , "fetchall" , cu)
+        qr = "SELECT * from times"
+        data = db_get(cr,qr,"fetchall")
         for tu in data:
             for item in tu:
-                if item is dname:
+                if item == target:
                     return False
         return data
     except Exception as e:
-        folder = path.expanduser("~")
-        logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
-        logging.basicConfig(filename=logFile , level=logging.ERROR)
-        logging.error(str(e)+" "+str(datetime.datetime.now()))
-        print("something")
+        log(e)
+        return False
         
 
 def db_edit(db , cr , table , new_value , title):
@@ -106,15 +98,12 @@ def db_edit(db , cr , table , new_value , title):
         data = db_get("*" , "times" , "fetchall" , cr)
         for tu in data:
             for item in tu:
-                if item is title:
+                if item == title:
                     return False
         return True
     except Exception as e:
-        folder = path.expanduser("~")
-        logFile = path.join(folder , "AppData/Local/GoTo/GoToShutdown/error.txt")
-        logging.basicConfig(filename=logFile , level=logging.ERROR)
-        logging.error(str(e)+" "+str(datetime.datetime.now()))
-        print("something")
+        log(e)
+        return False
         
 
 def addToReg():
