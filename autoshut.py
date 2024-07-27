@@ -60,7 +60,9 @@ class MainWindow():
 
     def delete(self):
         td = self._times.get()
-        del_res = asset.db_del(self.db,self.cr,"times","title",td)
+        #DELETE FROM {table} where {wanted_row} = '{dname}'
+        qr = f"DELETE FROM times where title = ?"
+        del_res = asset.db_del(self.db,self.cr,qr,td)
         if(del_res != False):
             if(len(del_res) > 0):
                 self._times['values'] = [time[0] for time in del_res]
