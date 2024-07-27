@@ -15,13 +15,15 @@ class MainWindow():
         self.db = sqlite3.connect(os.path.join(mainDir,"times.db"))
         self.cr = self.db.cursor()
         self.cr.execute("CREATE TABLE IF NOT EXISTS times(title text,hour text,min text,period text)")
-        times = [time[0] for time in asset.db_get("*","times","fetchall",self.cr)]
+        qr = "SELECT * FROM times"
+        times = [time[0] for time in asset.db_get(self.cr , qr , "fetchall")]
         if len(times) != 0:
             self.shutdown()
 
     def shutdown(self):
         today = datetime.datetime.today()
-        times = [time[0] for time in asset.db_get("*","times","fetchall",self.cr)]
+        qr = "SELECT * FROM times"
+        times = [time[0] for time in asset.db_get(self.cr , qr , "fetchall")]
         current = datetime.datetime.now().strftime("%I:%M %p")
         nearest_time = filteringSystem.ftime(times,current)
         nearest_time = today.replace(hour=nearest_time.hour,minute=nearest_time.minute,second=0,microsecond=0)
