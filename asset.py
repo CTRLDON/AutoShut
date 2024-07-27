@@ -89,11 +89,16 @@ def db_del(db , cr , query , target):
         return False
         
 
-def db_edit(db , cr , table , new_value , title):
+def db_edit(db , cr , query , tu , title):
+    """
+    db : insert the database variable
+    cr : insert the cursor of the database
+    query : insert the editing process query
+    tu : insert the values of the editing process to prevent sql injection
+    title : insert the old title of the record to ensure that the value has been edited
+    """
     try:
-        time = check_txt_len(new_value , 8 , "0")
-        tu = (time , time[0:2] , time[3:5] , time[6:] , title)
-        cr.execute(f"UPDATE {table} SET title=? , hours=? , minute=? , period=? where title=?" , tu)
+        cr.execute(query , tu)
         db.commit()
         data = db_get("*" , "times" , "fetchall" , cr)
         for tu in data:
