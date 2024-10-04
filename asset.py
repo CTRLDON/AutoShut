@@ -1,9 +1,21 @@
 import json
-from os import path , makedirs
+from os import path , makedirs , path
 from pynotifier import Notification
 from plyer import notification
 import logging
 import datetime
+
+
+def create_json():
+    dirname = path.dirname(path.abspath(__file__))
+    st = {
+        "autostart": False,
+        "error file": False,
+    }
+
+    st_json = json.dumps(st,indent=4)
+    with open(path.join(dirname,"config.json"), "w") as file:
+        file.write(st_json)
 
 
 def create_logging_folder():

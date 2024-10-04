@@ -1,4 +1,4 @@
 {
     "autostart": false,
-    "error file": false
+    "error file": true
 }
