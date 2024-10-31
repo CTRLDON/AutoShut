@@ -93,12 +93,13 @@ class MainWindow():
         times_window = tk.Toplevel(self.main_window)
         times_window.title("Times")
         times_window.geometry("200x200")
-        times_list = asset.db_get("*","times","fetchall",self.cr)
+        query = "SELECT * FROM times"
+        times_list = asset.db_get(self.cr,query,"fetchall")
         self._times = ttk.Combobox(times_window,values=[time[0] for time in times_list])
         self._times.pack()
         self.del_btn = ttk.Button(times_window,text="Delete",command=self.delete)
         self.del_btn.pack()
-        data = asset.db_get('*','times','fetchall',self.cr)
+        data = asset.db_get(self.cr,query,"fetchall")
         if len(data) == 0:
             self.del_btn['state'] = "disabled"
 
